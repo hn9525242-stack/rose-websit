@@ -1,111 +1,525 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رسم وردة حمراء تدريجياً</title>
-    <style>
-        /* يجعل الشاشة سوداء تماماً وتملأ الصفحة */
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            overflow: hidden; /* يمنع ظهور أشرطة التمرير */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
-            font-family: Arial, sans-serif;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🌹 الحمدلله ع السلامه 🌹</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #000;
+        overflow: hidden;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+    }
+
+    canvas {
+        display: block;
+    }
+
+    #message {
+        position: fixed;
+        left: 50%;
+        bottom: 6%;
+        transform: translateX(-50%);
+        width: 95%;
+        text-align: center;
+        direction: rtl;
+
+        color: white;
+        font-size: clamp(22px, 5vw, 42px);
+        font-weight: bold;
+        line-height: 1.7;
+
+        opacity: 0;
+        transition: opacity 2s ease;
+
+        text-shadow:
+            0 0 8px rgba(255,255,255,.8),
+            0 0 20px rgba(255,50,80,.7);
+    }
+
+    #message.show {
+        opacity: 1;
+    }
+
+    .heart {
+        display: inline-block;
+        animation: beat 1s infinite;
+    }
+
+    @keyframes beat {
+        0%,100% {
+            transform: scale(1);
         }
 
-        canvas {
-            display: block;
+        50% {
+            transform: scale(1.25);
         }
-    </style>
+    }
+</style>
 </head>
+
 <body>
 
-    <canvas id="roseCanvas"></canvas>
+<canvas id="roseCanvas"></canvas>
 
-    <script>
-        // إعدادات الشاشة (Canvas)
-        const canvas = document.getElementById('roseCanvas');
-        const ctx = canvas.getContext('2d');
+<div id="message">
+    الحمدلله ع السلامه بنوتاتي الحلوات
+    <br>
+    أحبج <span class="heart">♥️🌸</span>
+</div>
 
-        // جعل حجم الكانفاس يملأ الشاشة
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+<script>
 
-        // إعدادات الرسم
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        
-        // المتغيرات التي تتحكم في شكل وحجم الوردة
-        const roseSize = Math.min(canvas.width, canvas.height) * 0.4; // حجم الوردة نسبة للشاشة
-        
-        // متغيرات للتحكم في سرعة وتدرج الرسم
-        let t = 0; // متغير الوقت/الزاوية (يبدأ من 0)
-        const speed = 0.01; // سرعة الرسم (كلما كانت أقل، كان الرسم أبطأ)
-        const maxT = 10 * Math.PI; // متى يتوقف الرسم (عدد الدورات)
+const canvas = document.getElementById("roseCanvas");
+const ctx = canvas.getContext("2d");
+const message = document.getElementById("message");
 
-        // دالة لرسم "بتلة" واحدة من الوردة بناءً على معادلة رياضية
-        function getRosePoint(t) {
-            // معادلة الوردة القطبية (Polar Rose equation: r = a * sin(k * t))
-            // قمنا بتعديلها لتكون أكثر تعقيداً وجمالاً (الوردة الورقية)
-            
-            let k = 7/9; // معامل يحدد عدد البتلات وشكلها (جرب تغيير هذا الرقم!)
-            
-            // معادلة نصف القطر
-            let r = roseSize * (Math.sin(k * t));
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-            // تحويل الإحداثيات القطبية إلى ديكارتية (X, Y)
-            let x = r * Math.cos(t);
-            let y = r * Math.sin(t);
+const W = canvas.width;
+const H = canvas.height;
 
-            // إضافة تأثير انحناء بسيط لجعلها تبدو طبيعية أكثر
-            y += Math.abs(x) * 0.2; 
+const scale = Math.min(W, H);
 
-            return { x: centerX + x, y: centerY - y };
+const centerX = W / 2;
+const centerY = H / 2;
+
+let parts = [];
+
+/* =========================
+   إضافة خط للرسم
+========================= */
+
+function line(x1, y1, x2, y2, color, width) {
+
+    parts.push({
+        x1,
+        y1,
+        x2,
+        y2,
+        color,
+        width
+    });
+
+}
+
+
+/* =========================
+   رسم الساق
+========================= */
+
+function stem(x, y1, y2, curve = 0) {
+
+    const steps = 100;
+
+    for (let i = 0; i < steps; i++) {
+
+        const t1 = i / steps;
+        const t2 = (i + 1) / steps;
+
+        const yy1 = y1 + (y2 - y1) * t1;
+        const yy2 = y1 + (y2 - y1) * t2;
+
+        const xx1 =
+            x + Math.sin(t1 * Math.PI) * curve;
+
+        const xx2 =
+            x + Math.sin(t2 * Math.PI) * curve;
+
+        line(
+            xx1,
+            yy1,
+            xx2,
+            yy2,
+            "#247a32",
+            5
+        );
+    }
+}
+
+
+/* =========================
+   رسم ورقة 🌿
+========================= */
+
+function leaf(x, y, size, direction) {
+
+    const steps = 45;
+
+    for (let i = 0; i < steps; i++) {
+
+        const t1 = i / steps;
+        const t2 = (i + 1) / steps;
+
+        const xx1 =
+            x + direction * size * t1;
+
+        const xx2 =
+            x + direction * size * t2;
+
+        const curve1 =
+            Math.sin(t1 * Math.PI) * size * .22;
+
+        const curve2 =
+            Math.sin(t2 * Math.PI) * size * .22;
+
+        const yy1 = y - curve1;
+        const yy2 = y - curve2;
+
+        line(
+            xx1,
+            yy1,
+            xx2,
+            yy2,
+            "#278a36",
+            3
+        );
+
+        line(
+            xx1,
+            y + curve1,
+            xx2,
+            y + curve2,
+            "#1f6e2b",
+            2
+        );
+    }
+
+    /* عرق الورقة */
+
+    line(
+        x,
+        y,
+        x + direction * size,
+        y - size * .22,
+        "#43a847",
+        2
+    );
+}
+
+
+/* =========================
+   رسم وردة جميلة 🌹
+========================= */
+
+function rose(cx, cy, size) {
+
+    /* البتلات الخارجية */
+
+    const petals = 9;
+    const points = 90;
+
+    for (let p = 0; p < petals; p++) {
+
+        const rotation =
+            p * Math.PI * 2 / petals;
+
+        for (let i = 0; i < points; i++) {
+
+            const a1 =
+                i / points * Math.PI * 2;
+
+            const a2 =
+                (i + 1) / points * Math.PI * 2;
+
+            const r1 =
+                size *
+                (
+                    .28 +
+                    .72 *
+                    Math.abs(Math.sin(2.8 * a1))
+                );
+
+            const r2 =
+                size *
+                (
+                    .28 +
+                    .72 *
+                    Math.abs(Math.sin(2.8 * a2))
+                );
+
+            const x1 =
+                cx + r1 * Math.cos(a1 + rotation);
+
+            const y1 =
+                cy + r1 * Math.sin(a1 + rotation);
+
+            const x2 =
+                cx + r2 * Math.cos(a2 + rotation);
+
+            const y2 =
+                cy + r2 * Math.sin(a2 + rotation);
+
+            line(
+                x1,
+                y1,
+                x2,
+                y2,
+                "rgba(220,20,60,.75)",
+                2
+            );
         }
+    }
 
-        // دالة الرسم التدريجي
-        function drawRose() {
-            // رسم خط واحد صغير جداً في كل إطار من الحركة
-            if (t < maxT) {
-                let startPoint = getRosePoint(t);
-                t += speed;
-                let endPoint = getRosePoint(t);
 
-                // إعدادات الخط (لون أحمر مع تدرج شفافية بسيط)
-                ctx.beginPath();
-                ctx.moveTo(startPoint.x, startPoint.y);
-                ctx.lineTo(endPoint.x, endPoint.y);
-                
-                // لون أحمر جميل (يمكنك تغيير الدرجة)
-                ctx.strokeStyle = `rgba(220, 20, 60, ${0.7 + Math.sin(t)*0.3})`; // Crimson with dynamic opacity
-                ctx.lineWidth = 1.5; // سمك الخط
-                ctx.lineCap = 'round'; // نهاية الخط دائرية
-                ctx.stroke();
+    /* بتلات داخلية */
 
-                // طلب رسم الإطار التالي (الحركة)
-                requestAnimationFrame(drawRose);
-            } else {
-                // عندما ينتهي الرسم، يمكننا كتابة رسالة بسيطة
-                // ctx.fillStyle = 'white';
-                // ctx.font = '20px Arial';
-                // ctx.fillText('اكتملت الوردة', centerX - 60, centerY + roseSize + 40);
-            }
+    for (let ring = 1; ring <= 5; ring++) {
+
+        const radius =
+            size * (ring * .12);
+
+        const points2 = 50;
+
+        for (let i = 0; i < points2; i++) {
+
+            const a1 =
+                i / points2 * Math.PI * 2;
+
+            const a2 =
+                (i + 1) / points2 * Math.PI * 2;
+
+            line(
+                cx + radius * Math.cos(a1),
+                cy + radius * Math.sin(a1),
+
+                cx + radius * Math.cos(a2),
+                cy + radius * Math.sin(a2),
+
+                "#b51238",
+                1.5
+            );
         }
+    }
 
-        // بدء الرسم
-        drawRose();
 
-        // إعادة ضبط الحجم عند تغيير حجم النافذة
-        window.addEventListener('resize', () => {
-            location.reload(); // أبسط طريقة هي إعادة تحميل الصفحة للحفاظ على الرسم مركزياً
-        });
+    /* مركز الوردة */
 
-    </script>
+    for (let i = 0; i < 24; i++) {
+
+        const a = i * Math.PI / 12;
+
+        line(
+            cx,
+            cy,
+
+            cx + size * .16 * Math.cos(a),
+            cy + size * .16 * Math.sin(a),
+
+            "#8e102d",
+            2
+        );
+    }
+}
+
+
+/* =========================
+   الساق الرئيسية
+========================= */
+
+const bottom = centerY + scale * .38;
+const top = centerY - scale * .27;
+
+stem(
+    centerX,
+    bottom,
+    top,
+    25
+);
+
+
+/* =========================
+   الأغصان الصغيرة
+========================= */
+
+stem(
+    centerX,
+    centerY + scale * .12,
+    centerY - scale * .08,
+    -12
+);
+
+stem(
+    centerX,
+    centerY + scale * .20,
+    centerY - scale * .02,
+    14
+);
+
+
+/* =========================
+   الأوراق 🌿
+========================= */
+
+leaf(
+    centerX - scale * .01,
+    centerY + scale * .22,
+    scale * .22,
+    -1
+);
+
+leaf(
+    centerX + scale * .01,
+    centerY + scale * .12,
+    scale * .21,
+    1
+);
+
+leaf(
+    centerX - scale * .01,
+    centerY,
+    scale * .18,
+    -1
+);
+
+leaf(
+    centerX + scale * .01,
+    centerY - scale * .10,
+    scale * .16,
+    1
+);
+
+
+/* =========================
+   الوردة الرئيسية
+========================= */
+
+rose(
+    centerX,
+    top,
+    scale * .15
+);
+
+
+/* =========================
+   وردة يمين
+========================= */
+
+rose(
+    centerX + scale * .15,
+    centerY - scale * .09,
+    scale * .10
+);
+
+
+/* =========================
+   وردة يسار
+========================= */
+
+rose(
+    centerX - scale * .15,
+    centerY - scale * .02,
+    scale * .10
+);
+
+
+/* =========================
+   وردة صغيرة يمين
+========================= */
+
+rose(
+    centerX + scale * .12,
+    centerY + scale * .12,
+    scale * .075
+);
+
+
+/* =========================
+   وردة صغيرة يسار
+========================= */
+
+rose(
+    centerX - scale * .12,
+    centerY + scale * .16,
+    scale * .075
+);
+
+
+/* =========================
+   الرسم التدريجي
+========================= */
+
+let index = 0;
+let progress = 0;
+
+/* أسرع من الكود السابق */
+
+const speed = .035;
+
+function draw() {
+
+    if (index >= parts.length) {
+
+        setTimeout(() => {
+            message.classList.add("show");
+        }, 600);
+
+        return;
+    }
+
+    const p = parts[index];
+
+    progress += speed;
+
+    if (progress >= 1) {
+
+        progress = 0;
+        index++;
+    }
+
+    const x =
+        p.x1 +
+        (p.x2 - p.x1) * progress;
+
+    const y =
+        p.y1 +
+        (p.y2 - p.y1) * progress;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        p.x1,
+        p.y1
+    );
+
+    ctx.lineTo(
+        x,
+        y
+    );
+
+    ctx.strokeStyle = p.color;
+    ctx.lineWidth = p.width;
+    ctx.lineCap = "round";
+
+    ctx.stroke();
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+
+
+/* =========================
+   إعادة ضبط عند تغيير الشاشة
+========================= */
+
+window.addEventListener("resize", () => {
+    location.reload();
+});
+
+</script>
+
 </body>
 </html>
