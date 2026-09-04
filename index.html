@@ -4,115 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🌹 الحمدلله ع السلامه 🌹</title>
+<title>🌹</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+}
 
-    body {
-        margin: 0;
-        background: #000;
-        overflow: hidden;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: Arial, sans-serif;
-    }
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    canvas {
-        display: block;
-    }
+canvas {
+    width: 100vw;
+    height: 100vh;
+}
 
-    #message {
-        position: fixed;
-        left: 50%;
-        bottom: 6%;
-        transform: translateX(-50%);
-        width: 95%;
-        text-align: center;
-        direction: rtl;
+#message {
+    position: fixed;
+    bottom: 7%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    direction: rtl;
 
-        color: white;
-        font-size: clamp(22px, 5vw, 42px);
-        font-weight: bold;
-        line-height: 1.7;
+    color: white;
+    font-size: clamp(20px, 5vw, 38px);
+    font-weight: bold;
+    line-height: 1.8;
 
-        opacity: 0;
-        transition: opacity 2s ease;
+    opacity: 0;
+    transition: opacity 2s ease;
 
-        text-shadow:
-            0 0 8px rgba(255,255,255,.8),
-            0 0 20px rgba(255,50,80,.7);
-    }
+    text-shadow: 0 0 12px white,
+                 0 0 25px #ff1744;
+}
 
-    #message.show {
-        opacity: 1;
-    }
-
-    .heart {
-        display: inline-block;
-        animation: beat 1s infinite;
-    }
-
-    @keyframes beat {
-        0%,100% {
-            transform: scale(1);
-        }
-
-        50% {
-            transform: scale(1.25);
-        }
-    }
+#message.show {
+    opacity: 1;
+}
 </style>
 </head>
 
 <body>
 
-<canvas id="roseCanvas"></canvas>
+<canvas id="canvas"></canvas>
 
 <div id="message">
     الحمدلله ع السلامه بنوتاتي الحلوات
     <br>
-    أحبج <span class="heart">♥️🌸</span>
+    أحبج ♥️🌸
 </div>
 
 <script>
 
-const canvas = document.getElementById("roseCanvas");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const message = document.getElementById("message");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+let W = window.innerWidth;
+let H = window.innerHeight;
 
-const W = canvas.width;
-const H = canvas.height;
+canvas.width = W;
+canvas.height = H;
 
-const scale = Math.min(W, H);
+const CX = W / 2;
+const CY = H / 2;
 
-const centerX = W / 2;
-const centerY = H / 2;
+const S = Math.min(W, H);
 
-let parts = [];
+let lines = [];
+
 
 /* =========================
-   إضافة خط للرسم
+   إضافة خط
 ========================= */
 
-function line(x1, y1, x2, y2, color, width) {
-
-    parts.push({
-        x1,
-        y1,
-        x2,
-        y2,
+function addLine(x1, y1, x2, y2, color, width) {
+    lines.push({
+        x1, y1,
+        x2, y2,
         color,
         width
     });
-
 }
 
 
@@ -120,205 +101,180 @@ function line(x1, y1, x2, y2, color, width) {
    رسم الساق
 ========================= */
 
-function stem(x, y1, y2, curve = 0) {
+function makeStem(x, startY, endY) {
 
-    const steps = 100;
+    const steps = 80;
 
     for (let i = 0; i < steps; i++) {
 
-        const t1 = i / steps;
-        const t2 = (i + 1) / steps;
+        let a = i / steps;
+        let b = (i + 1) / steps;
 
-        const yy1 = y1 + (y2 - y1) * t1;
-        const yy2 = y1 + (y2 - y1) * t2;
+        let y1 = startY + (endY - startY) * a;
+        let y2 = startY + (endY - startY) * b;
 
-        const xx1 =
-            x + Math.sin(t1 * Math.PI) * curve;
+        let x1 = x + Math.sin(a * Math.PI) * 18;
+        let x2 = x + Math.sin(b * Math.PI) * 18;
 
-        const xx2 =
-            x + Math.sin(t2 * Math.PI) * curve;
-
-        line(
-            xx1,
-            yy1,
-            xx2,
-            yy2,
-            "#247a32",
-            5
+        addLine(
+            x1, y1,
+            x2, y2,
+            "#238b35",
+            6
         );
     }
 }
 
 
 /* =========================
-   رسم ورقة 🌿
+   رسم ورقة
 ========================= */
 
-function leaf(x, y, size, direction) {
+function makeLeaf(x, y, size, side) {
 
-    const steps = 45;
+    const steps = 35;
 
     for (let i = 0; i < steps; i++) {
 
-        const t1 = i / steps;
-        const t2 = (i + 1) / steps;
+        let a = i / steps;
+        let b = (i + 1) / steps;
 
-        const xx1 =
-            x + direction * size * t1;
+        let x1 = x + side * size * a;
+        let x2 = x + side * size * b;
 
-        const xx2 =
-            x + direction * size * t2;
+        let curve1 = Math.sin(a * Math.PI) * size * 0.25;
+        let curve2 = Math.sin(b * Math.PI) * size * 0.25;
 
-        const curve1 =
-            Math.sin(t1 * Math.PI) * size * .22;
-
-        const curve2 =
-            Math.sin(t2 * Math.PI) * size * .22;
-
-        const yy1 = y - curve1;
-        const yy2 = y - curve2;
-
-        line(
-            xx1,
-            yy1,
-            xx2,
-            yy2,
-            "#278a36",
+        addLine(
+            x1,
+            y - curve1,
+            x2,
+            y - curve2,
+            "#2e963c",
             3
         );
 
-        line(
-            xx1,
+        addLine(
+            x1,
             y + curve1,
-            xx2,
+            x2,
             y + curve2,
-            "#1f6e2b",
-            2
+            "#24782f",
+            3
         );
     }
 
     /* عرق الورقة */
 
-    line(
+    addLine(
         x,
         y,
-        x + direction * size,
-        y - size * .22,
-        "#43a847",
+        x + side * size,
+        y - size * 0.25,
+        "#55b85b",
         2
     );
 }
 
 
 /* =========================
-   رسم وردة جميلة 🌹
+   رسم وردة 🌹
 ========================= */
 
-function rose(cx, cy, size) {
+function makeRose(cx, cy, size) {
 
-    /* البتلات الخارجية */
+    /*
+       البتلات الخارجية
+    */
 
-    const petals = 9;
-    const points = 90;
+    const turns = 4;
+    const points = 180;
 
-    for (let p = 0; p < petals; p++) {
+    let previous = null;
 
-        const rotation =
-            p * Math.PI * 2 / petals;
+    for (let i = 0; i <= points; i++) {
 
-        for (let i = 0; i < points; i++) {
+        let t = i / points * Math.PI * 2 * turns;
 
-            const a1 =
-                i / points * Math.PI * 2;
+        /*
+           شكل الوردة
+        */
 
-            const a2 =
-                (i + 1) / points * Math.PI * 2;
+        let r =
+            size *
+            Math.sin(5 * t);
 
-            const r1 =
-                size *
-                (
-                    .28 +
-                    .72 *
-                    Math.abs(Math.sin(2.8 * a1))
-                );
+        r = Math.abs(r);
 
-            const r2 =
-                size *
-                (
-                    .28 +
-                    .72 *
-                    Math.abs(Math.sin(2.8 * a2))
-                );
+        let x =
+            cx + r * Math.cos(t);
 
-            const x1 =
-                cx + r1 * Math.cos(a1 + rotation);
+        let y =
+            cy + r * Math.sin(t);
 
-            const y1 =
-                cy + r1 * Math.sin(a1 + rotation);
+        if (previous) {
 
-            const x2 =
-                cx + r2 * Math.cos(a2 + rotation);
-
-            const y2 =
-                cy + r2 * Math.sin(a2 + rotation);
-
-            line(
-                x1,
-                y1,
-                x2,
-                y2,
-                "rgba(220,20,60,.75)",
-                2
+            addLine(
+                previous.x,
+                previous.y,
+                x,
+                y,
+                "rgba(230,20,55,0.9)",
+                2.2
             );
         }
+
+        previous = { x, y };
     }
 
 
-    /* بتلات داخلية */
+    /*
+       دوائر داخلية تعطي شكل البتلات
+    */
 
-    for (let ring = 1; ring <= 5; ring++) {
+    for (let ring = 1; ring <= 4; ring++) {
 
-        const radius =
-            size * (ring * .12);
+        let radius = size * ring * 0.11;
 
-        const points2 = 50;
+        let old = null;
 
-        for (let i = 0; i < points2; i++) {
+        for (let i = 0; i <= 80; i++) {
 
-            const a1 =
-                i / points2 * Math.PI * 2;
+            let a = i / 80 * Math.PI * 2;
 
-            const a2 =
-                (i + 1) / points2 * Math.PI * 2;
+            let x = cx + radius * Math.cos(a);
+            let y = cy + radius * Math.sin(a);
 
-            line(
-                cx + radius * Math.cos(a1),
-                cy + radius * Math.sin(a1),
+            if (old) {
 
-                cx + radius * Math.cos(a2),
-                cy + radius * Math.sin(a2),
+                addLine(
+                    old.x,
+                    old.y,
+                    x,
+                    y,
+                    "#b51238",
+                    1.5
+                );
+            }
 
-                "#b51238",
-                1.5
-            );
+            old = { x, y };
         }
     }
 
+    /*
+       مركز الوردة
+    */
 
-    /* مركز الوردة */
+    for (let i = 0; i < 12; i++) {
 
-    for (let i = 0; i < 24; i++) {
+        let a = i / 12 * Math.PI * 2;
 
-        const a = i * Math.PI / 12;
-
-        line(
+        addLine(
             cx,
             cy,
-
-            cx + size * .16 * Math.cos(a),
-            cy + size * .16 * Math.sin(a),
-
-            "#8e102d",
+            cx + size * 0.13 * Math.cos(a),
+            cy + size * 0.13 * Math.sin(a),
+            "#8b102d",
             2
         );
     }
@@ -329,152 +285,111 @@ function rose(cx, cy, size) {
    الساق الرئيسية
 ========================= */
 
-const bottom = centerY + scale * .38;
-const top = centerY - scale * .27;
+const bottom = H * 0.88;
+const top = H * 0.30;
 
-stem(
-    centerX,
+makeStem(
+    CX,
     bottom,
-    top,
-    25
+    top
 );
 
 
 /* =========================
-   الأغصان الصغيرة
+   أوراق 🌿
 ========================= */
 
-stem(
-    centerX,
-    centerY + scale * .12,
-    centerY - scale * .08,
-    -12
-);
-
-stem(
-    centerX,
-    centerY + scale * .20,
-    centerY - scale * .02,
-    14
-);
-
-
-/* =========================
-   الأوراق 🌿
-========================= */
-
-leaf(
-    centerX - scale * .01,
-    centerY + scale * .22,
-    scale * .22,
+makeLeaf(
+    CX,
+    H * 0.72,
+    S * 0.22,
     -1
 );
 
-leaf(
-    centerX + scale * .01,
-    centerY + scale * .12,
-    scale * .21,
+makeLeaf(
+    CX,
+    H * 0.62,
+    S * 0.20,
     1
 );
 
-leaf(
-    centerX - scale * .01,
-    centerY,
-    scale * .18,
+makeLeaf(
+    CX,
+    H * 0.52,
+    S * 0.17,
     -1
 );
 
-leaf(
-    centerX + scale * .01,
-    centerY - scale * .10,
-    scale * .16,
+makeLeaf(
+    CX,
+    H * 0.43,
+    S * 0.15,
     1
 );
 
 
 /* =========================
-   الوردة الرئيسية
+   الوردات 🌹🌹🌹
 ========================= */
 
-rose(
-    centerX,
-    top,
-    scale * .15
+makeRose(
+    CX,
+    H * 0.27,
+    S * 0.15
+);
+
+makeRose(
+    CX - S * 0.14,
+    H * 0.40,
+    S * 0.10
+);
+
+makeRose(
+    CX + S * 0.14,
+    H * 0.45,
+    S * 0.10
+);
+
+makeRose(
+    CX - S * 0.10,
+    H * 0.55,
+    S * 0.075
+);
+
+makeRose(
+    CX + S * 0.10,
+    H * 0.59,
+    S * 0.075
 );
 
 
 /* =========================
-   وردة يمين
-========================= */
-
-rose(
-    centerX + scale * .15,
-    centerY - scale * .09,
-    scale * .10
-);
-
-
-/* =========================
-   وردة يسار
-========================= */
-
-rose(
-    centerX - scale * .15,
-    centerY - scale * .02,
-    scale * .10
-);
-
-
-/* =========================
-   وردة صغيرة يمين
-========================= */
-
-rose(
-    centerX + scale * .12,
-    centerY + scale * .12,
-    scale * .075
-);
-
-
-/* =========================
-   وردة صغيرة يسار
-========================= */
-
-rose(
-    centerX - scale * .12,
-    centerY + scale * .16,
-    scale * .075
-);
-
-
-/* =========================
-   الرسم التدريجي
+   الرسم
 ========================= */
 
 let index = 0;
 let progress = 0;
 
-/* أسرع من الكود السابق */
+/* أسرع شوي */
 
-const speed = .035;
+const SPEED = 0.045;
 
-function draw() {
+function animate() {
 
-    if (index >= parts.length) {
+    if (index >= lines.length) {
 
-        setTimeout(() => {
+        setTimeout(function() {
             message.classList.add("show");
-        }, 600);
+        }, 700);
 
         return;
     }
 
-    const p = parts[index];
+    const p = lines[index];
 
-    progress += speed;
+    progress += SPEED;
 
     if (progress >= 1) {
-
         progress = 0;
         index++;
     }
@@ -489,15 +404,8 @@ function draw() {
 
     ctx.beginPath();
 
-    ctx.moveTo(
-        p.x1,
-        p.y1
-    );
-
-    ctx.lineTo(
-        x,
-        y
-    );
+    ctx.moveTo(p.x1, p.y1);
+    ctx.lineTo(x, y);
 
     ctx.strokeStyle = p.color;
     ctx.lineWidth = p.width;
@@ -505,17 +413,17 @@ function draw() {
 
     ctx.stroke();
 
-    requestAnimationFrame(draw);
+    requestAnimationFrame(animate);
 }
 
-draw();
+animate();
 
 
 /* =========================
-   إعادة ضبط عند تغيير الشاشة
+   عند تغيير حجم الشاشة
 ========================= */
 
-window.addEventListener("resize", () => {
+window.addEventListener("resize", function() {
     location.reload();
 });
 
