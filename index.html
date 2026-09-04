@@ -1,433 +1,275 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>باقة ورد حمراء</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<title>🌹</title>
+        body {
+            background-color: #050505;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: black;
-}
+        #canvas-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        canvas {
+            display: block;
+        }
 
-canvas {
-    width: 100vw;
-    height: 100vh;
-}
+        /* تنسيق الرسالة النهائية */
+        #message-box {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+            pointer-events: none;
+            width: 90%;
+            max-width: 600px;
+        }
 
-#message {
-    position: fixed;
-    bottom: 7%;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    direction: rtl;
+        #message-box.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
 
-    color: white;
-    font-size: clamp(20px, 5vw, 38px);
-    font-weight: bold;
-    line-height: 1.8;
+        .main-text {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.6), 0 0 20px rgba(255, 0, 80, 0.4);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
 
-    opacity: 0;
-    transition: opacity 2s ease;
+        .sub-text {
+            color: #ff4d6d;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
+        }
 
-    text-shadow: 0 0 12px white,
-                 0 0 25px #ff1744;
-}
-
-#message.show {
-    opacity: 1;
-}
-</style>
+        @media (max-width: 600px) {
+            .main-text { font-size: 1.3rem; }
+            .sub-text { font-size: 1.2rem; }
+        }
+    </style>
 </head>
-
 <body>
 
-<canvas id="canvas"></canvas>
+    <div id="canvas-container">
+        <canvas id="roseCanvas"></canvas>
+        <div id="message-box">
+            <div class="main-text">الحمدلله ع السلامه بنوتاتي الحلوات ♥️🌸</div>
+            <div class="sub-text">احبج</div>
+        </div>
+    </div>
 
-<div id="message">
-    الحمدلله ع السلامه بنوتاتي الحلوات
-    <br>
-    أحبج ♥️🌸
-</div>
+    <script>
+        const canvas = document.getElementById('roseCanvas');
+        const ctx = canvas.getContext('2d');
+        const messageBox = document.getElementById('message-box');
 
-<script>
-
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const message = document.getElementById("message");
-
-let W = window.innerWidth;
-let H = window.innerHeight;
-
-canvas.width = W;
-canvas.height = H;
-
-const CX = W / 2;
-const CY = H / 2;
-
-const S = Math.min(W, H);
-
-let lines = [];
-
-
-/* =========================
-   إضافة خط
-========================= */
-
-function addLine(x1, y1, x2, y2, color, width) {
-    lines.push({
-        x1, y1,
-        x2, y2,
-        color,
-        width
-    });
-}
-
-
-/* =========================
-   رسم الساق
-========================= */
-
-function makeStem(x, startY, endY) {
-
-    const steps = 80;
-
-    for (let i = 0; i < steps; i++) {
-
-        let a = i / steps;
-        let b = (i + 1) / steps;
-
-        let y1 = startY + (endY - startY) * a;
-        let y2 = startY + (endY - startY) * b;
-
-        let x1 = x + Math.sin(a * Math.PI) * 18;
-        let x2 = x + Math.sin(b * Math.PI) * 18;
-
-        addLine(
-            x1, y1,
-            x2, y2,
-            "#238b35",
-            6
-        );
-    }
-}
-
-
-/* =========================
-   رسم ورقة
-========================= */
-
-function makeLeaf(x, y, size, side) {
-
-    const steps = 35;
-
-    for (let i = 0; i < steps; i++) {
-
-        let a = i / steps;
-        let b = (i + 1) / steps;
-
-        let x1 = x + side * size * a;
-        let x2 = x + side * size * b;
-
-        let curve1 = Math.sin(a * Math.PI) * size * 0.25;
-        let curve2 = Math.sin(b * Math.PI) * size * 0.25;
-
-        addLine(
-            x1,
-            y - curve1,
-            x2,
-            y - curve2,
-            "#2e963c",
-            3
-        );
-
-        addLine(
-            x1,
-            y + curve1,
-            x2,
-            y + curve2,
-            "#24782f",
-            3
-        );
-    }
-
-    /* عرق الورقة */
-
-    addLine(
-        x,
-        y,
-        x + side * size,
-        y - size * 0.25,
-        "#55b85b",
-        2
-    );
-}
-
-
-/* =========================
-   رسم وردة 🌹
-========================= */
-
-function makeRose(cx, cy, size) {
-
-    /*
-       البتلات الخارجية
-    */
-
-    const turns = 4;
-    const points = 180;
-
-    let previous = null;
-
-    for (let i = 0; i <= points; i++) {
-
-        let t = i / points * Math.PI * 2 * turns;
-
-        /*
-           شكل الوردة
-        */
-
-        let r =
-            size *
-            Math.sin(5 * t);
-
-        r = Math.abs(r);
-
-        let x =
-            cx + r * Math.cos(t);
-
-        let y =
-            cy + r * Math.sin(t);
-
-        if (previous) {
-
-            addLine(
-                previous.x,
-                previous.y,
-                x,
-                y,
-                "rgba(230,20,55,0.9)",
-                2.2
-            );
+        // ضبط أبعاد الشاشة
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
+        resizeCanvas();
 
-        previous = { x, y };
-    }
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const baseY = height * 0.85;
 
+        // حالة الرسم
+        let step = 0;
+        let progress = 0;
 
-    /*
-       دوائر داخلية تعطي شكل البتلات
-    */
+        // 1. رسم الساق الرئيسي والأفرع
+        function drawStems() {
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
 
-    for (let ring = 1; ring <= 4; ring++) {
+            // الساق الرئيسي
+            ctx.beginPath();
+            ctx.strokeStyle = '#2d5a27';
+            ctx.moveTo(centerX, baseY);
+            
+            let currentY = baseY - (baseY - height * 0.4) * progress;
+            let currentX = centerX + Math.sin(progress * Math.PI * 2) * 12;
+            
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
 
-        let radius = size * ring * 0.11;
-
-        let old = null;
-
-        for (let i = 0; i <= 80; i++) {
-
-            let a = i / 80 * Math.PI * 2;
-
-            let x = cx + radius * Math.cos(a);
-            let y = cy + radius * Math.sin(a);
-
-            if (old) {
-
-                addLine(
-                    old.x,
-                    old.y,
-                    x,
-                    y,
-                    "#b51238",
-                    1.5
-                );
+            // رسم الأوراق الخضراء عند منتصف الطريق
+            if (progress > 0.4) {
+                drawLeaf(centerX - 8, baseY - (baseY - height * 0.4) * 0.35, -0.8, progress);
+                drawLeaf(centerX + 8, baseY - (baseY - height * 0.4) * 0.5, 0.8, progress);
             }
 
-            old = { x, y };
+            // رسم الفرع الأيسر للبرعم
+            if (progress > 0.5) {
+                let branchP = (progress - 0.5) * 2;
+                ctx.beginPath();
+                ctx.strokeStyle = '#2d5a27';
+                ctx.lineWidth = 2.5;
+                ctx.moveTo(centerX - 5, baseY - (baseY - height * 0.4) * 0.45);
+                ctx.quadraticCurveTo(
+                    centerX - 40, baseY - (baseY - height * 0.4) * 0.5,
+                    centerX - 60 * branchP, (baseY - (baseY - height * 0.4) * 0.45) - 50 * branchP
+                );
+                ctx.stroke();
+            }
+
+            // رسم الفرع الأيمن للبرعم
+            if (progress > 0.6) {
+                let branchP = (progress - 0.6) * 2.5;
+                ctx.beginPath();
+                ctx.strokeStyle = '#2d5a27';
+                ctx.lineWidth = 2.5;
+                ctx.moveTo(centerX + 5, baseY - (baseY - height * 0.4) * 0.55);
+                ctx.quadraticCurveTo(
+                    centerX + 40, baseY - (baseY - height * 0.4) * 0.6,
+                    centerX + 55 * branchP, (baseY - (baseY - height * 0.4) * 0.55) - 40 * branchP
+                );
+                ctx.stroke();
+            }
+
+            progress += 0.03; // سرعة رسم الساق
+            if (progress <= 1) {
+                requestAnimationFrame(drawStems);
+            } else {
+                progress = 0;
+                requestAnimationFrame(drawSideRoses);
+            }
         }
-    }
 
-    /*
-       مركز الوردة
-    */
+        // ورقة شجر خضراء
+        function drawLeaf(x, y, angle, p) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.beginPath();
+            ctx.fillStyle = '#3a7d34';
+            ctx.ellipse(20, 0, 22, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#1e3f1a';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.restore();
+        }
 
-    for (let i = 0; i < 12; i++) {
+        // 2. رسم الورود الجانبية الصغرى (البراعم)
+        function drawSideRoses() {
+            let leftX = centerX - 60;
+            let leftY = (baseY - (baseY - height * 0.4) * 0.45) - 50;
+            
+            let rightX = centerX + 55;
+            let rightY = (baseY - (baseY - height * 0.4) * 0.55) - 40;
 
-        let a = i / 12 * Math.PI * 2;
+            drawBud(leftX, leftY, 0.7);
+            drawBud(rightX, rightY, 0.65);
 
-        addLine(
-            cx,
-            cy,
-            cx + size * 0.13 * Math.cos(a),
-            cy + size * 0.13 * Math.sin(a),
-            "#8b102d",
-            2
-        );
-    }
-}
+            progress += 0.05;
+            if (progress <= 1) {
+                requestAnimationFrame(drawSideRoses);
+            } else {
+                progress = 0;
+                requestAnimationFrame(drawMainRose);
+            }
+        }
 
+        function drawBud(x, y, scale) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(scale * progress, scale * progress);
+            
+            // قاعدة الكأس الأخضر
+            ctx.beginPath();
+            ctx.fillStyle = '#2d5a27';
+            ctx.arc(0, 10, 12, 0, Math.PI);
+            ctx.fill();
 
-/* =========================
-   الساق الرئيسية
-========================= */
+            // بتلات احمرة
+            ctx.beginPath();
+            ctx.fillStyle = '#c1121f';
+            ctx.arc(0, 0, 14, 0, Math.PI * 2);
+            ctx.fill();
 
-const bottom = H * 0.88;
-const top = H * 0.30;
+            ctx.beginPath();
+            ctx.fillStyle = '#780000';
+            ctx.arc(-3, -2, 9, 0, Math.PI * 2);
+            ctx.fill();
 
-makeStem(
-    CX,
-    bottom,
-    top
-);
+            ctx.restore();
+        }
 
+        // 3. رسم الوردة الرئيسية الكبيرة في الأعلى (رسم فخم وتدريجي سريع)
+        let roseT = 0;
+        const maxRoseT = 12 * Math.PI;
+        const mainRoseX = centerX;
+        const mainRoseY = height * 0.4;
+        const roseScale = Math.min(width, height) * 0.22;
 
-/* =========================
-   أوراق 🌿
-========================= */
+        function drawMainRose() {
+            // رسم عدة نقاط في كل إطار لزيادة السرعة مع الحفاظ على النعومة
+            for (let i = 0; i < 4; i++) {
+                if (roseT < maxRoseT) {
+                    let k = 5 / 7;
+                    let r = roseScale * Math.sin(k * roseT);
+                    
+                    let x = r * Math.cos(roseT);
+                    let y = r * Math.sin(roseT);
 
-makeLeaf(
-    CX,
-    H * 0.72,
-    S * 0.22,
-    -1
-);
+                    // إضافة انحناء لمظهر طبيعي
+                    y -= Math.abs(x) * 0.15;
 
-makeLeaf(
-    CX,
-    H * 0.62,
-    S * 0.20,
-    1
-);
+                    ctx.beginPath();
+                    ctx.arc(mainRoseX + x, mainRoseY + y, 1.8, 0, Math.PI * 2);
+                    
+                    // التدرج بين الأحمر الظلي والأحمر الزاهي
+                    let redVal = Math.floor(180 + Math.sin(roseT) * 75);
+                    ctx.fillStyle = `rgb(${redVal}, 10, 40)`;
+                    ctx.fill();
 
-makeLeaf(
-    CX,
-    H * 0.52,
-    S * 0.17,
-    -1
-);
+                    roseT += 0.02; // زيادة الخطوة لسرعة أكبر
+                }
+            }
 
-makeLeaf(
-    CX,
-    H * 0.43,
-    S * 0.15,
-    1
-);
+            if (roseT < maxRoseT) {
+                requestAnimationFrame(drawMainRose);
+            } else {
+                // إظهار العبارة عند اكتمال الرسم
+                setTimeout(() => {
+                    messageBox.classList.add('show');
+                }, 300);
+            }
+        }
 
+        // بدء تنفيذ الرسم
+        drawStems();
 
-/* =========================
-   الوردات 🌹🌹🌹
-========================= */
-
-makeRose(
-    CX,
-    H * 0.27,
-    S * 0.15
-);
-
-makeRose(
-    CX - S * 0.14,
-    H * 0.40,
-    S * 0.10
-);
-
-makeRose(
-    CX + S * 0.14,
-    H * 0.45,
-    S * 0.10
-);
-
-makeRose(
-    CX - S * 0.10,
-    H * 0.55,
-    S * 0.075
-);
-
-makeRose(
-    CX + S * 0.10,
-    H * 0.59,
-    S * 0.075
-);
-
-
-/* =========================
-   الرسم
-========================= */
-
-let index = 0;
-let progress = 0;
-
-/* أسرع شوي */
-
-const SPEED = 0.045;
-
-function animate() {
-
-    if (index >= lines.length) {
-
-        setTimeout(function() {
-            message.classList.add("show");
-        }, 700);
-
-        return;
-    }
-
-    const p = lines[index];
-
-    progress += SPEED;
-
-    if (progress >= 1) {
-        progress = 0;
-        index++;
-    }
-
-    const x =
-        p.x1 +
-        (p.x2 - p.x1) * progress;
-
-    const y =
-        p.y1 +
-        (p.y2 - p.y1) * progress;
-
-    ctx.beginPath();
-
-    ctx.moveTo(p.x1, p.y1);
-    ctx.lineTo(x, y);
-
-    ctx.strokeStyle = p.color;
-    ctx.lineWidth = p.width;
-    ctx.lineCap = "round";
-
-    ctx.stroke();
-
-    requestAnimationFrame(animate);
-}
-
-animate();
-
-
-/* =========================
-   عند تغيير حجم الشاشة
-========================= */
-
-window.addEventListener("resize", function() {
-    location.reload();
-});
-
-</script>
-
+    </script>
 </body>
 </html>
