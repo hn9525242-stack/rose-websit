@@ -18,7 +18,7 @@
             transition: background-color 1.5s ease;
         }
 
-        /* المرحلة الأولى: شاشة كيتي الوردية */
+        /* المرحلة الأولى: الشاشة الوردية */
         #pink-screen {
             position: absolute;
             top: 0;
@@ -40,9 +40,15 @@
             visibility: hidden;
         }
 
+        .kitty-container {
+            font-size: 5rem;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
         .kitty-img {
-            width: 140px;
-            height: 140px;
+            width: 150px;
+            height: 150px;
             object-fit: contain;
             margin-bottom: 15px;
             filter: drop-shadow(0 5px 10px rgba(255, 105, 180, 0.4));
@@ -50,15 +56,17 @@
 
         .question-text {
             color: #d63384;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             margin-bottom: 25px;
             text-shadow: 0 2px 5px rgba(255, 255, 255, 0.8);
+            max-width: 90%;
+            line-height: 1.4;
         }
 
         .buttons-container {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -67,8 +75,8 @@
             background-color: #ff69b4;
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.3rem;
+            padding: 12px 25px;
+            font-size: 1.2rem;
             font-weight: bold;
             border-radius: 25px;
             cursor: pointer;
@@ -80,8 +88,12 @@
             transform: scale(0.95);
         }
 
-        /* المرحلة الثانية: الشاشة الوردية للرسم */
-        #drawing-screen {
+        .btn-alt {
+            background-color: #ff4d6d;
+        }
+
+        /* المرحلة الثانية: شاشة الرسم السوداء */
+        #black-screen {
             position: absolute;
             top: 0;
             left: 0;
@@ -95,7 +107,7 @@
             transition: opacity 1.5s ease;
         }
 
-        #drawing-screen.show {
+        #black-screen.show {
             opacity: 1;
             visibility: visible;
         }
@@ -115,12 +127,12 @@
             pointer-events: none;
             width: 88%;
             max-width: 550px;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(0, 0, 0, 0.7);
             padding: 25px 20px;
             border-radius: 20px;
             backdrop-filter: blur(8px);
-            border: 2px solid rgba(255, 105, 180, 0.5);
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+            border: 1px solid rgba(255, 77, 109, 0.3);
+            box-shadow: 0 0 30px rgba(255, 0, 80, 0.3);
         }
 
         #message-box.show {
@@ -129,89 +141,127 @@
         }
 
         .main-text {
-            color: #a81c51;
+            color: #ffffff;
             font-size: 1.8rem;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.9), 0 0 30px rgba(255, 0, 80, 0.7);
             margin-bottom: 12px;
             line-height: 1.5;
         }
 
         .sub-text {
-            color: #d63384;
+            color: #ff4d6d;
             font-size: 1.6rem;
             font-weight: 600;
-            text-shadow: 0 0 8px rgba(255, 182, 193, 0.9);
+            text-shadow: 0 0 12px rgba(255, 77, 109, 1);
         }
 
         @media (max-width: 600px) {
             .main-text { font-size: 1.35rem; }
             .sub-text { font-size: 1.25rem; }
-            .question-text { font-size: 1.6rem; }
-            .btn { font-size: 1.1rem; padding: 10px 22px; }
+            .question-text { font-size: 1.4rem; }
+            .btn { font-size: 1.05rem; padding: 10px 20px; }
+            .kitty-img { width: 120px; height: 120px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- الشاشة الوردية الأولى -->
+    <!-- الشاشة الوردية -->
     <div id="pink-screen">
-        <img id="kitty-img" class="kitty-img" src="https://upload.wikimedia.org/wikipedia/en/a/a6/Hello_Kitty_logo.svg" alt="Hello Kitty">
+        <div id="kitty-box">
+            <img id="kitty-img" class="kitty-img" src="https://api.iconify.design/fluent-emoji:cat-face.svg" alt="Kitty">
+        </div>
+        
         <div id="question" class="question-text">تحبيني؟</div>
         
+        <!-- الخطوة 1: تحبيني؟ -->
         <div id="step1-btns" class="buttons-container">
             <button class="btn" onclick="answerLove()">نعم</button>
             <button class="btn" onclick="answerLove()">طبعاً</button>
         </div>
 
+        <!-- الخطوة 2: تردين ورده؟ -->
         <div id="step2-btns" class="buttons-container" style="display: none;">
-            <button class="btn" onclick="startRoseSequence()">نعم 🌹</button>
+            <button class="btn" onclick="askKiss()">نعم 🌹</button>
+        </div>
+
+        <!-- الخطوة 3: شرط البوسة -->
+        <div id="step3-btns" class="buttons-container" style="display: none;">
+            <button class="btn" onclick="startRoseSequence()">أممممحححح 💋</button>
+            <button class="btn btn-alt" onclick="rejectKiss()">لا ماكو بوسة 🙈</button>
+        </div>
+
+        <!-- الخطوة 4: غصب تنطيني بوسة -->
+        <div id="step4-btns" class="buttons-container" style="display: none;">
+            <button class="btn" onclick="startRoseSequence()">أممممحححح 💋</button>
         </div>
     </div>
 
-    <!-- الشاشة الوردية للرسم -->
-    <div id="drawing-screen">
+    <!-- الشاشة السوداء للرسم -->
+    <div id="black-screen">
         <canvas id="roseCanvas"></canvas>
         <div id="message-box">
             <div class="main-text">الحمدلله ع السلامه بنوتاتي الحلوات ♥️🌸</div>
-            <div class="sub-text">احبج</div>
+            <div class="sub-text">اموت عليج</div>
         </div>
     </div>
 
     <script>
         const pinkScreen = document.getElementById('pink-screen');
-        const drawingScreen = document.getElementById('drawing-screen');
+        const blackScreen = document.getElementById('black-screen');
         const questionText = document.getElementById('question');
         const step1Btns = document.getElementById('step1-btns');
         const step2Btns = document.getElementById('step2-btns');
+        const step3Btns = document.getElementById('step3-btns');
+        const step4Btns = document.getElementById('step4-btns');
         const kittyImg = document.getElementById('kitty-img');
 
-        // الخطوة الأولى
+        // 1. الإجابة على تحبيني
         function answerLove() {
             questionText.innerText = "اني هم احبج ♥️";
             step1Btns.style.display = "none";
             
-            kittyImg.src = "https://cdn.pixabay.com/photo/2021/01/21/14/10/hello-kitty-5937446_1280.png";
+            // تغيير أيقونة كيتي إلى وجه سعيد بحب
+            kittyImg.src = "https://api.iconify.design/fluent-emoji:smiling-cat-with-heart-eyes.svg";
 
             setTimeout(() => {
                 questionText.innerText = "تردين ورده؟ 🌹";
                 step2Btns.style.display = "flex";
-            }, 1800);
+            }, 1600);
         }
 
-        // بدء الرسم على الشاشة الوردية
+        // 2. سؤال شرط البوسة
+        function askKiss() {
+            questionText.innerText = "تره الوردة مقابل بوسة! انطيني بوسة تاخذين الوردة 💋";
+            step2Btns.style.display = "none";
+            step3Btns.style.display = "flex";
+            kittyImg.src = "https://api.iconify.design/fluent-emoji:kissing-cat.svg";
+        }
+
+        // 3. حالة رفض البوسة (كيتي عصبي)
+        function rejectKiss() {
+            questionText.innerText = "غصب تنطيني بوسة! 😡💋";
+            step3Btns.style.display = "none";
+            step4Btns.style.display = "flex";
+            
+            // كيتي عصبي
+            kittyImg.src = "https://api.iconify.design/fluent-emoji:pouting-cat.svg";
+        }
+
+        // 4. موافقة البوسة والانتقال للرسم
         function startRoseSequence() {
             pinkScreen.classList.add('hide');
-            document.body.style.backgroundColor = "#ffe3ee";
+            document.body.style.backgroundColor = "#020202";
             
             setTimeout(() => {
-                drawingScreen.classList.add('show');
+                blackScreen.classList.add('show');
                 initCanvas();
                 drawRose();
             }, 1000);
         }
 
-        // --- كود الرسم ---
+        // --- كود رسم الوردة والقلوب ---
         const canvas = document.getElementById('roseCanvas');
         const ctx = canvas.getContext('2d');
         const messageBox = document.getElementById('message-box');
@@ -243,11 +293,10 @@
                 ctx.beginPath();
                 ctx.arc(centerX + x, centerY + y, 2.2, 0, Math.PI * 2);
                 
-                // أحمر قاني وداكن ليبرز على خلفية وردية
-                let redVal = Math.floor(200 + Math.sin(roseT) * 55);
-                ctx.fillStyle = `rgb(${redVal}, 10, 50)`;
-                ctx.shadowColor = 'rgba(214, 51, 132, 0.4)';
-                ctx.shadowBlur = 6;
+                let redVal = Math.floor(190 + Math.sin(roseT) * 65);
+                ctx.fillStyle = `rgb(${redVal}, 12, 42)`;
+                ctx.shadowColor = 'rgba(255, 0, 50, 0.5)';
+                ctx.shadowBlur = 8;
                 ctx.fill();
 
                 roseT += 0.022;
@@ -293,9 +342,9 @@
             ctx.scale(progress, progress);
             
             ctx.beginPath();
-            ctx.fillStyle = '#e6005c';
-            ctx.shadowColor = '#ff69b4';
-            ctx.shadowBlur = 10;
+            ctx.fillStyle = '#ff2a5f';
+            ctx.shadowColor = '#ff4d6d';
+            ctx.shadowBlur = 12;
 
             let topCurveHeight = size * 0.3;
             ctx.moveTo(0, topCurveHeight);
