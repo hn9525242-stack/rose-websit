@@ -41,8 +41,8 @@
         }
 
         .kitty-img {
-            width: 160px;
-            height: 160px;
+            width: 170px;
+            height: 170px;
             object-fit: contain;
             margin-bottom: 15px;
             filter: drop-shadow(0 5px 15px rgba(255, 105, 180, 0.4));
@@ -155,42 +155,51 @@
             .sub-text { font-size: 1.25rem; }
             .question-text { font-size: 1.4rem; }
             .btn { font-size: 1.05rem; padding: 10px 20px; }
-            .kitty-img { width: 130px; height: 130px; }
+            .kitty-img { width: 140px; height: 140px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- ملف الصوت للأغنية -->
     <audio id="bgMusic" src="song.mp3" preload="auto"></audio>
 
+    <!-- الشاشة الوردية تفاعلية -->
     <div id="pink-screen">
-        <img class="kitty-img" src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f431.png" alt="Hello Kitty" id="kitty-img">
+        <!-- يعتمد على ملف الصورة المحفوظ محلياً لديك -->
+        <img class="kitty-img" id="kitty-img" src="kitty.png" alt="Hello Kitty" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/a/a6/Hello_Kitty_logo.svg'">
         
         <div id="question" class="question-text">يا هلا ببنيات گلبي نورتي بغداد يا حلوتي ♥️</div>
         
+        <!-- الخطوة 0: الترحيب ببغداد -->
         <div id="step0-btns" class="buttons-container">
             <button class="btn" onclick="startQuestions()">هلا بيك عيني 🌸</button>
         </div>
 
+        <!-- الخطوة 1: تحبيني؟ -->
         <div id="step1-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="answerLove()">نعم</button>
             <button class="btn" onclick="answerLove()">طبعاً</button>
         </div>
 
+        <!-- الخطوة 2: تردين ورده؟ -->
         <div id="step2-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="askKiss()">نعم 🌹</button>
         </div>
 
+        <!-- الخطوة 3: شرط البوسة -->
         <div id="step3-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="startRoseSequence()">أممممحححح 💋</button>
             <button class="btn btn-alt" onclick="rejectKiss()">لا ماكو بوسة 🙈</button>
         </div>
 
+        <!-- الخطوة 4: غصب تنطيني بوسة -->
         <div id="step4-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="startRoseSequence()">أممممحححح 💋</button>
         </div>
     </div>
 
+    <!-- شاشة الرسم الوردية -->
     <div id="drawing-screen">
         <canvas id="roseCanvas"></canvas>
         <div id="message-box">
@@ -209,10 +218,6 @@
         const step3Btns = document.getElementById('step3-btns');
         const step4Btns = document.getElementById('step4-btns');
         const bgMusic = document.getElementById('bgMusic');
-        const kittyImg = document.getElementById('kitty-img');
-
-        // رابط صورة هالو كيتي الأصلية بجودة عالية جداً
-        kittyImg.src = "https://cdn.pixabay.com/photo/2021/01/21/14/10/hello-kitty-5937446_1280.png";
 
         // الانتقال من الترحيب إلى تحبيني؟
         function startQuestions() {
