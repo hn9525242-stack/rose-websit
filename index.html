@@ -40,11 +40,12 @@
             visibility: hidden;
         }
 
-        .kitty-svg {
-            width: 170px;
-            height: 170px;
+        .kitty-img {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
             margin-bottom: 15px;
-            filter: drop-shadow(0 6px 12px rgba(255, 105, 180, 0.4));
+            filter: drop-shadow(0 5px 15px rgba(255, 105, 180, 0.4));
         }
 
         .question-text {
@@ -154,77 +155,42 @@
             .sub-text { font-size: 1.25rem; }
             .question-text { font-size: 1.4rem; }
             .btn { font-size: 1.05rem; padding: 10px 20px; }
-            .kitty-svg { width: 140px; height: 140px; }
+            .kitty-img { width: 130px; height: 130px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ملف الصوت للأغنية -->
     <audio id="bgMusic" src="song.mp3" preload="auto"></audio>
 
-    <!-- الشاشة الوردية تفاعلية -->
     <div id="pink-screen">
+        <img class="kitty-img" src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f431.png" alt="Hello Kitty" id="kitty-img">
         
-        <!-- رسم هالو كيتي المباشر بدون اعتماد على الإنترنت -->
-        <svg class="kitty-svg" viewBox="0 0 200 180">
-            <!-- الرأس -->
-            <ellipse cx="100" cy="95" rx="70" ry="52" fill="#ffffff" stroke="#000000" stroke-width="5.5"/>
-            <!-- الأذن اليسرى -->
-            <path d="M 40 60 Q 32 15 62 48" fill="#ffffff" stroke="#000000" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- الأذن اليمنى -->
-            <path d="M 160 60 Q 168 15 138 48" fill="#ffffff" stroke="#000000" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- العيون -->
-            <ellipse cx="68" cy="98" rx="6.5" ry="9.5" fill="#000000"/>
-            <ellipse cx="132" cy="98" rx="6.5" ry="9.5" fill="#000000"/>
-            <!-- الأنف -->
-            <ellipse cx="100" cy="108" rx="7.5" ry="5.5" fill="#ffcc00" stroke="#000000" stroke-width="2"/>
-            <!-- الشوارب اليمنى -->
-            <line x1="145" y1="92" x2="182" y2="86" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-            <line x1="148" y1="102" x2="185" y2="102" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-            <line x1="145" y1="112" x2="180" y2="118" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-            <!-- الشوارب اليسرى -->
-            <line x1="55" y1="92" x2="18" y2="86" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-            <line x1="52" y1="102" x2="15" y2="102" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-            <line x1="55" y1="112" x2="20" y2="118" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-            <!-- الفيونكة الحمراء -->
-            <circle cx="138" cy="52" r="11" fill="#ff0044" stroke="#000000" stroke-width="4.5"/>
-            <path d="M 138 52 Q 112 30 118 65 Q 138 52 138 52 Z" fill="#ff0044" stroke="#000000" stroke-width="4.5" stroke-linejoin="round"/>
-            <path d="M 138 52 Q 164 30 158 65 Q 138 52 138 52 Z" fill="#ff0044" stroke="#000000" stroke-width="4.5" stroke-linejoin="round"/>
-            <circle cx="135" cy="49" r="3" fill="#ffffff" opacity="0.6"/>
-        </svg>
-
         <div id="question" class="question-text">يا هلا ببنيات گلبي نورتي بغداد يا حلوتي ♥️</div>
         
-        <!-- الخطوة 0: الترحيب ببغداد -->
         <div id="step0-btns" class="buttons-container">
             <button class="btn" onclick="startQuestions()">هلا بيك عيني 🌸</button>
         </div>
 
-        <!-- الخطوة 1: تحبيني؟ -->
         <div id="step1-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="answerLove()">نعم</button>
             <button class="btn" onclick="answerLove()">طبعاً</button>
         </div>
 
-        <!-- الخطوة 2: تردين ورده؟ -->
         <div id="step2-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="askKiss()">نعم 🌹</button>
         </div>
 
-        <!-- الخطوة 3: شرط البوسة -->
         <div id="step3-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="startRoseSequence()">أممممحححح 💋</button>
             <button class="btn btn-alt" onclick="rejectKiss()">لا ماكو بوسة 🙈</button>
         </div>
 
-        <!-- الخطوة 4: غصب تنطيني بوسة -->
         <div id="step4-btns" class="buttons-container" style="display: none;">
             <button class="btn" onclick="startRoseSequence()">أممممحححح 💋</button>
         </div>
     </div>
 
-    <!-- شاشة الرسم الوردية -->
     <div id="drawing-screen">
         <canvas id="roseCanvas"></canvas>
         <div id="message-box">
@@ -243,6 +209,10 @@
         const step3Btns = document.getElementById('step3-btns');
         const step4Btns = document.getElementById('step4-btns');
         const bgMusic = document.getElementById('bgMusic');
+        const kittyImg = document.getElementById('kitty-img');
+
+        // رابط صورة هالو كيتي الأصلية بجودة عالية جداً
+        kittyImg.src = "https://cdn.pixabay.com/photo/2021/01/21/14/10/hello-kitty-5937446_1280.png";
 
         // الانتقال من الترحيب إلى تحبيني؟
         function startQuestions() {
@@ -278,7 +248,6 @@
 
         // 4. الانطلاق للرسم وتشغيل الأغنية
         function startRoseSequence() {
-            // تشغيل الصوت
             bgMusic.play().catch(e => console.log("الصوت بانتظار تفاعل"));
 
             pinkScreen.classList.add('hide');
