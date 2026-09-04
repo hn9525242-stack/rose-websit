@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وردة حمراء أنيقة</title>
+    <title>وردة حمراء وقلوب</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            background-color: #030303;
+            background-color: #020202;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -34,22 +34,24 @@
             display: block;
         }
 
-        /* رسالة النص التي تظهر بالمنتصف */
+        /* مربع النص بالمنتصف */
         #message-box {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
+            transform: translate(-50%, -50%) scale(0.85);
             text-align: center;
             opacity: 0;
             transition: opacity 2.5s ease-in-out, transform 2.5s ease-in-out;
             pointer-events: none;
-            width: 90%;
-            max-width: 600px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(4px);
+            width: 88%;
+            max-width: 550px;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 25px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 77, 109, 0.3);
+            box-shadow: 0 0 30px rgba(255, 0, 80, 0.3);
         }
 
         #message-box.show {
@@ -61,7 +63,7 @@
             color: #ffffff;
             font-size: 1.8rem;
             font-weight: bold;
-            text-shadow: 0 0 12px rgba(255, 105, 180, 0.8), 0 0 25px rgba(255, 0, 80, 0.6);
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.9), 0 0 30px rgba(255, 0, 80, 0.7);
             margin-bottom: 12px;
             line-height: 1.5;
         }
@@ -70,12 +72,12 @@
             color: #ff4d6d;
             font-size: 1.6rem;
             font-weight: 600;
-            text-shadow: 0 0 10px rgba(255, 77, 109, 0.9);
+            text-shadow: 0 0 12px rgba(255, 77, 109, 1);
         }
 
         @media (max-width: 600px) {
-            .main-text { font-size: 1.3rem; }
-            .sub-text { font-size: 1.2rem; }
+            .main-text { font-size: 1.35rem; }
+            .sub-text { font-size: 1.25rem; }
         }
     </style>
 </head>
@@ -103,103 +105,104 @@
         const width = canvas.width;
         const height = canvas.height;
         const centerX = width / 2;
-        const baseY = height * 0.9;
+        const centerY = height / 2;
 
-        let stemProgress = 0;
+        // حجم الوردة الكبير جداً
+        const roseSize = Math.min(width, height) * 0.38;
 
-        // 1. رسم الساق والأوراق الخضراء بحركة متزنة
-        function drawStemAndLeaves() {
-            ctx.clearRect(0, 0, width, height);
+        let roseT = 0;
+        const maxRoseT = 16 * Math.PI;
 
-            // رسم الساق
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#2e5a1c';
-            ctx.beginPath();
-            ctx.moveTo(centerX, baseY);
-            
-            let currentY = baseY - (baseY - height * 0.38) * stemProgress;
-            let currentX = centerX + Math.sin(stemProgress * Math.PI * 1.5) * 8;
-            
-            ctx.lineTo(currentX, currentY);
-            ctx.stroke();
+        // 1. رسم الوردة الحمراء الكبيرة جداً بهدوء
+        function drawRose() {
+            if (roseT < maxRoseT) {
+                // رسم خطوة صغيرة جداً للحفاظ على البطء والجمالية
+                let k = 7 / 9;
+                let r = roseSize * Math.sin(k * roseT);
+                
+                let x = r * Math.cos(roseT);
+                let y = r * Math.sin(roseT);
 
-            // رسم الأوراق الخضراء
-            if (stemProgress > 0.35) {
-                let leafScale = Math.min((stemProgress - 0.35) * 2, 1);
-                drawLeaf(centerX - 4, baseY - (baseY - height * 0.38) * 0.3, -0.6, leafScale);
-            }
-            if (stemProgress > 0.55) {
-                let leafScale = Math.min((stemProgress - 0.55) * 2, 1);
-                drawLeaf(centerX + 4, baseY - (baseY - height * 0.38) * 0.5, 0.6, leafScale);
-            }
+                // انحناء بتلات طبيعي
+                y -= Math.abs(x) * 0.1;
 
-            stemProgress += 0.012; // سرعة انسيابية للساق
+                ctx.beginPath();
+                ctx.arc(centerX + x, centerY + y, 2.2, 0, Math.PI * 2);
+                
+                // تدرجات أحمر مخملي فخم
+                let redVal = Math.floor(190 + Math.sin(roseT) * 65);
+                ctx.fillStyle = `rgb(${redVal}, 12, 42)`;
+                ctx.shadowColor = 'rgba(255, 0, 50, 0.5)';
+                ctx.shadowBlur = 8;
+                ctx.fill();
 
-            if (stemProgress <= 1) {
-                requestAnimationFrame(drawStemAndLeaves);
+                roseT += 0.022; // سرعة هادئة جداً ورائعة
+                requestAnimationFrame(drawRose);
             } else {
-                requestAnimationFrame(drawPetals);
+                // إطفاء تأثير الظل لتخفيف الحمل
+                ctx.shadowBlur = 0;
+                // البدء برسم القلوب حول الوردة
+                requestAnimationFrame(startHeartsDrawing);
             }
         }
 
-        function drawLeaf(x, y, angle, scale) {
+        // 2. إعداد ورسم القلوب حول الوردة
+        const heartCount = 12; // عدد القلوب المحيطة
+        let heartIndex = 0;
+        let heartProgress = 0;
+        const heartRadius = roseSize * 1.15; // المسافة حول الوردة
+
+        function startHeartsDrawing() {
+            if (heartIndex < heartCount) {
+                let angle = (heartIndex / heartCount) * Math.PI * 2;
+                let hx = centerX + Math.cos(angle) * heartRadius;
+                let hy = centerY + Math.sin(angle) * heartRadius;
+
+                drawSingleHeart(hx, hy, 16, heartProgress);
+
+                heartProgress += 0.05; // سرعة رسم القلب الواحد
+
+                if (heartProgress <= 1) {
+                    requestAnimationFrame(startHeartsDrawing);
+                } else {
+                    heartProgress = 0;
+                    heartIndex++;
+                    requestAnimationFrame(startHeartsDrawing);
+                }
+            } else {
+                // 3. إظهار النص عند اكتمال كل شيء
+                setTimeout(() => {
+                    messageBox.classList.add('show');
+                }, 500);
+            }
+        }
+
+        // دالة رسم قلب واحد
+        function drawSingleHeart(x, y, size, progress) {
             ctx.save();
             ctx.translate(x, y);
-            ctx.rotate(angle);
-            ctx.scale(scale, scale);
+            ctx.scale(progress, progress);
             
             ctx.beginPath();
-            ctx.fillStyle = '#3a7d34';
-            ctx.ellipse(25, 0, 26, 10, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff2a5f';
+            ctx.shadowColor = '#ff4d6d';
+            ctx.shadowBlur = 12;
+
+            // معادلة رسم شكل القلب
+            let topCurveHeight = size * 0.3;
+            ctx.moveTo(0, topCurveHeight);
+            ctx.bezierCurveTo(0, 0, -size / 2, 0, -size / 2, topCurveHeight);
+            ctx.bezierCurveTo(-size / 2, (size + topCurveHeight) / 2, 0, size, 0, size * 1.2);
+            ctx.bezierCurveTo(0, size, size / 2, (size + topCurveHeight) / 2, size / 2, topCurveHeight);
+            ctx.bezierCurveTo(size / 2, 0, 0, 0, 0, topCurveHeight);
+            
             ctx.fill();
-            
-            ctx.strokeStyle = '#1b4017';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-            
             ctx.restore();
         }
 
-        // 2. رسم الوردة الحمراء الفخمة (بتلات متدرجة)
-        let petalAngle = 0;
-        const maxPetalAngle = 14 * Math.PI;
-        const roseCenterX = centerX;
-        const roseCenterY = height * 0.38;
-        const roseSize = Math.min(width, height) * 0.22;
+        // بدء الرسم فوراً بالوردة
+        drawRose();
 
-        function drawPetals() {
-            // رسم خطوة واحدة فقط في كل إطار للتحكم في السرعة
-            if (petalAngle < maxPetalAngle) {
-                let k = 6 / 7;
-                let r = roseSize * Math.sin(k * petalAngle);
-                
-                let x = r * Math.cos(petalAngle);
-                let y = r * Math.sin(petalAngle);
-
-                // انحناء طبيعي للبتلة
-                y -= Math.abs(x) * 0.12;
-
-                ctx.beginPath();
-                ctx.arc(roseCenterX + x, roseCenterY + y, 2, 0, Math.PI * 2);
-                
-                // درجات اللون الأحمر القاني والجميل
-                let red = Math.floor(190 + Math.sin(petalAngle) * 65);
-                ctx.fillStyle = `rgb(${red}, 15, 45)`;
-                ctx.fill();
-
-                petalAngle += 0.035; // سرعة رسم الوردة الفخمة
-                requestAnimationFrame(drawPetals);
-            } else {
-                // ظهور الكلام بالمنتصف وراء اكتمال الرسم
-                setTimeout(() => {
-                    messageBox.classList.add('show');
-                }, 400);
-            }
-        }
-
-        // إطلاق حركة الرسم
-        drawStemAndLeaves();
     </script>
 </body>
 </html>
