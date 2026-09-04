@@ -18,7 +18,7 @@
             transition: background-color 1.5s ease;
         }
 
-        /* الشاشة الوردية للتفاعل */
+        /* الشاشة الوردية تفاعلية */
         #pink-screen {
             position: absolute;
             top: 0;
@@ -40,12 +40,11 @@
             visibility: hidden;
         }
 
-        .kitty-img {
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
+        .kitty-svg {
+            width: 170px;
+            height: 170px;
             margin-bottom: 15px;
-            filter: drop-shadow(0 5px 12px rgba(255, 105, 180, 0.5));
+            filter: drop-shadow(0 6px 12px rgba(255, 105, 180, 0.4));
         }
 
         .question-text {
@@ -155,7 +154,7 @@
             .sub-text { font-size: 1.25rem; }
             .question-text { font-size: 1.4rem; }
             .btn { font-size: 1.05rem; padding: 10px 20px; }
-            .kitty-img { width: 130px; height: 130px; }
+            .kitty-svg { width: 140px; height: 140px; }
         }
     </style>
 </head>
@@ -166,8 +165,35 @@
 
     <!-- الشاشة الوردية تفاعلية -->
     <div id="pink-screen">
-        <img id="kitty-img" class="kitty-img" src="https://upload.wikimedia.org/wikipedia/en/a/a6/Hello_Kitty_logo.svg" alt="Hello Kitty">
         
+        <!-- رسم هالو كيتي المباشر بدون اعتماد على الإنترنت -->
+        <svg class="kitty-svg" viewBox="0 0 200 180">
+            <!-- الرأس -->
+            <ellipse cx="100" cy="95" rx="70" ry="52" fill="#ffffff" stroke="#000000" stroke-width="5.5"/>
+            <!-- الأذن اليسرى -->
+            <path d="M 40 60 Q 32 15 62 48" fill="#ffffff" stroke="#000000" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- الأذن اليمنى -->
+            <path d="M 160 60 Q 168 15 138 48" fill="#ffffff" stroke="#000000" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- العيون -->
+            <ellipse cx="68" cy="98" rx="6.5" ry="9.5" fill="#000000"/>
+            <ellipse cx="132" cy="98" rx="6.5" ry="9.5" fill="#000000"/>
+            <!-- الأنف -->
+            <ellipse cx="100" cy="108" rx="7.5" ry="5.5" fill="#ffcc00" stroke="#000000" stroke-width="2"/>
+            <!-- الشوارب اليمنى -->
+            <line x1="145" y1="92" x2="182" y2="86" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
+            <line x1="148" y1="102" x2="185" y2="102" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
+            <line x1="145" y1="112" x2="180" y2="118" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
+            <!-- الشوارب اليسرى -->
+            <line x1="55" y1="92" x2="18" y2="86" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
+            <line x1="52" y1="102" x2="15" y2="102" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
+            <line x1="55" y1="112" x2="20" y2="118" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
+            <!-- الفيونكة الحمراء -->
+            <circle cx="138" cy="52" r="11" fill="#ff0044" stroke="#000000" stroke-width="4.5"/>
+            <path d="M 138 52 Q 112 30 118 65 Q 138 52 138 52 Z" fill="#ff0044" stroke="#000000" stroke-width="4.5" stroke-linejoin="round"/>
+            <path d="M 138 52 Q 164 30 158 65 Q 138 52 138 52 Z" fill="#ff0044" stroke="#000000" stroke-width="4.5" stroke-linejoin="round"/>
+            <circle cx="135" cy="49" r="3" fill="#ffffff" opacity="0.6"/>
+        </svg>
+
         <div id="question" class="question-text">يا هلا ببنيات گلبي نورتي بغداد يا حلوتي ♥️</div>
         
         <!-- الخطوة 0: الترحيب ببغداد -->
