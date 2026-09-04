@@ -41,11 +41,11 @@
         }
 
         .kitty-img {
-            width: 170px;
-            height: 170px;
+            width: 180px;
+            height: 180px;
             object-fit: contain;
             margin-bottom: 15px;
-            filter: drop-shadow(0 5px 15px rgba(255, 105, 180, 0.4));
+            filter: drop-shadow(0 6px 15px rgba(255, 105, 180, 0.45));
         }
 
         .question-text {
@@ -164,10 +164,10 @@
     <!-- ملف الصوت للأغنية -->
     <audio id="bgMusic" src="song.mp3" preload="auto"></audio>
 
-    <!-- الشاشة الوردية تفاعلية -->
+    <!-- الشاشة الوردية التفاعلية -->
     <div id="pink-screen">
-        <!-- يعتمد على ملف الصورة المحفوظ محلياً لديك -->
-        <img class="kitty-img" id="kitty-img" src="kitty.png" alt="Hello Kitty" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/a/a6/Hello_Kitty_logo.svg'">
+        <!-- صورة هالو كيتي مضمنة بالكامل كود داخل الملف ومضمونة العرض 100% -->
+        <img class="kitty-img" id="kitty-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 260'><g fill='none' fill-rule='evenodd'><path fill='%23FFF' stroke='%23000' stroke-width='8' d='M210 55c25 0 45 20 45 45 15 5 25 18 25 33 0 20-20 35-45 35-5 25-25 45-60 45s-55-20-60-45c-25 0-45-15-45-35 0-15 10-28 25-33 0-25 20-45 45-45 10-20 30-35 55-35s45 15 55 35z'/><ellipse cx='150' cy='140' rx='105' ry='80' fill='%23FFF' stroke='%23000' stroke-width='8'/><path fill='%23FFF' stroke='%23000' stroke-width='8' stroke-linejoin='round' d='M65 85 Q 50 20 100 55 Z M235 85 Q 250 20 200 55 Z'/><ellipse cx='105' cy='140' rx='10' ry='15' fill='%23000'/><ellipse cx='195' cy='140' rx='10' ry='15' fill='%23000'/><ellipse cx='150' cy='158' rx='12' ry='8' fill='%23FFC107' stroke='%23000' stroke-width='3'/><path stroke='%23000' stroke-width='7' stroke-linecap='round' d='M220 135l40-8M225 150l45 2M220 165l40 10M80 135l-40-8M75 150l-45 2M80 165l-40 10'/><g fill='%23FF1744' stroke='%23000' stroke-width='7' stroke-linejoin='round'><circle cx='210' cy='75' r='16'/><path d='M210 75 Q 170 45 180 95 Q 210 75 210 75 Z'/><path d='M210 75 Q 250 45 240 95 Q 210 75 210 75 Z'/><circle cx='206' cy='71' r='4' fill='%23FFF' stroke='none'/></g></g></svg>" alt="Hello Kitty">
         
         <div id="question" class="question-text">يا هلا ببنيات گلبي نورتي بغداد يا حلوتي ♥️</div>
         
