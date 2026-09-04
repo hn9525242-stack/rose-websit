@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رسم وردة حمراء تدريجياً</title>
+    <style>
+        /* يجعل الشاشة سوداء تماماً وتملأ الصفحة */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden; /* يمنع ظهور أشرطة التمرير */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="roseCanvas"></canvas>
+
+    <script>
+        // إعدادات الشاشة (Canvas)
+        const canvas = document.getElementById('roseCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // جعل حجم الكانفاس يملأ الشاشة
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // إعدادات الرسم
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // المتغيرات التي تتحكم في شكل وحجم الوردة
+        const roseSize = Math.min(canvas.width, canvas.height) * 0.4; // حجم الوردة نسبة للشاشة
+        
+        // متغيرات للتحكم في سرعة وتدرج الرسم
+        let t = 0; // متغير الوقت/الزاوية (يبدأ من 0)
+        const speed = 0.01; // سرعة الرسم (كلما كانت أقل، كان الرسم أبطأ)
+        const maxT = 10 * Math.PI; // متى يتوقف الرسم (عدد الدورات)
+
+        // دالة لرسم "بتلة" واحدة من الوردة بناءً على معادلة رياضية
+        function getRosePoint(t) {
+            // معادلة الوردة القطبية (Polar Rose equation: r = a * sin(k * t))
+            // قمنا بتعديلها لتكون أكثر تعقيداً وجمالاً (الوردة الورقية)
+            
+            let k = 7/9; // معامل يحدد عدد البتلات وشكلها (جرب تغيير هذا الرقم!)
+            
+            // معادلة نصف القطر
+            let r = roseSize * (Math.sin(k * t));
+
+            // تحويل الإحداثيات القطبية إلى ديكارتية (X, Y)
+            let x = r * Math.cos(t);
+            let y = r * Math.sin(t);
+
+            // إضافة تأثير انحناء بسيط لجعلها تبدو طبيعية أكثر
+            y += Math.abs(x) * 0.2; 
+
+            return { x: centerX + x, y: centerY - y };
+        }
+
+        // دالة الرسم التدريجي
+        function drawRose() {
+            // رسم خط واحد صغير جداً في كل إطار من الحركة
+            if (t < maxT) {
+                let startPoint = getRosePoint(t);
+                t += speed;
+                let endPoint = getRosePoint(t);
+
+                // إعدادات الخط (لون أحمر مع تدرج شفافية بسيط)
+                ctx.beginPath();
+                ctx.moveTo(startPoint.x, startPoint.y);
+                ctx.lineTo(endPoint.x, endPoint.y);
+                
+                // لون أحمر جميل (يمكنك تغيير الدرجة)
+                ctx.strokeStyle = `rgba(220, 20, 60, ${0.7 + Math.sin(t)*0.3})`; // Crimson with dynamic opacity
+                ctx.lineWidth = 1.5; // سمك الخط
+                ctx.lineCap = 'round'; // نهاية الخط دائرية
+                ctx.stroke();
+
+                // طلب رسم الإطار التالي (الحركة)
+                requestAnimationFrame(drawRose);
+            } else {
+                // عندما ينتهي الرسم، يمكننا كتابة رسالة بسيطة
+                // ctx.fillStyle = 'white';
+                // ctx.font = '20px Arial';
+                // ctx.fillText('اكتملت الوردة', centerX - 60, centerY + roseSize + 40);
+            }
+        }
+
+        // بدء الرسم
+        drawRose();
+
+        // إعادة ضبط الحجم عند تغيير حجم النافذة
+        window.addEventListener('resize', () => {
+            location.reload(); // أبسط طريقة هي إعادة تحميل الصفحة للحفاظ على الرسم مركزياً
+        });
+
+    </script>
+</body>
+</html>
